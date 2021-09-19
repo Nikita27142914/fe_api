@@ -1,7 +1,13 @@
+const { string } = require('joi')
 const { model, Schema } = require('mongoose')
 
 const userSchema = new Schema({
   userName: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  login: {
     type: String,
     unique: true,
     required: true
