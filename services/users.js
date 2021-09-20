@@ -12,7 +12,7 @@ const getAdmins = async () => {
     const admins = await Admins.find().exec()
     console.log('admins ', admins)
     return admins
-  } catch(error) {
+  } catch (error) {
     console.log(`usersService.getAdmins error: ${error}`)
     throw error
   }
@@ -25,7 +25,7 @@ const checkUserExists = async (query) => {
     let role
 
     user = await Users.findOne(query).exec()
-    if(!user) {
+    if (!user) {
       user = await Admins.findOne(query).exec()
       role = 'admin'
     } else {
@@ -33,7 +33,7 @@ const checkUserExists = async (query) => {
     }
 
     return { user, role, generateAccesToken }
-  } catch(error) {
+  } catch (error) {
     console.log(`usersService.checkUserExists error: ${error}`)
     throw error
   }
@@ -42,7 +42,7 @@ const checkUserExists = async (query) => {
 const checkAdminById = async (adminId) => {
   console.log('usersService.checkAdminById')
   const admin = await Admins.findById(adminId).exec()
-  if(!admin) {
+  if (!admin) {
     console.log('usersService.checkAdminById error')
     throw Error('No admin found for this user')
   }
@@ -54,9 +54,9 @@ const createUser = async ({ userName, login, password, role, adminId }) => {
     let user
     const hashedPassword = bcrypt.hashSync(password, 1)
 
-    if(role === 'admin') {
+    if (role === 'admin') {
       await createAdmin({ userName, login, hashedPassword })
-    } else if(role === 'user') {
+    } else if (role === 'user') {
       await checkAdminById(adminId)
 
       user = new Users({ password: hashedPassword, userName, login, adminId })
@@ -65,7 +65,7 @@ const createUser = async ({ userName, login, password, role, adminId }) => {
     } else {
       throw Error('User role is not valid')
     }
-  } catch(error) {
+  } catch (error) {
     console.log(`usersService.createUser error: ${error}`)
     throw error
   }
@@ -77,7 +77,7 @@ const createAdmin = async ({ userName, login, hashedPassword }) => {
     const admin = new Admins({ password: hashedPassword, userName, login })
     await admin.save()
     console.log(`created admin ${admin}`)
-  } catch(error) {
+  } catch (error) {
     console.log(`usersService.createAdmin error: ${error}`)
     throw error
   }
@@ -85,7 +85,7 @@ const createAdmin = async ({ userName, login, hashedPassword }) => {
 
 const checkPasswords = (password, hashedPassword) => {
   const result = bcrypt.compareSync(password, hashedPassword)
-  if(!result) {
+  if (!result) {
     throw Error('Passwords did not match')
   }
 }

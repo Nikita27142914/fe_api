@@ -1,5 +1,6 @@
 const usersService = require('../services/users')
 
+// eslint-disable-next-line no-unused-vars
 const getUsers = async (req, res) => {
   console.log('usersController.getUsers')
 }

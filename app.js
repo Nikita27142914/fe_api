@@ -2,7 +2,7 @@ const morgan = require('morgan')
 
 const http = require('http')
 const express = require('express')
-const cors = require("cors")
+const cors = require('cors')
 
 const { useRoutes } = require('./routes')
 const { serverListen } = require('./config/server')
@@ -24,7 +24,7 @@ async function start() {
   try { 
       await createDBConnection()
       serverListen(server)
-  } catch(error) {
-      console.log(error);
+  } catch (error) {
+      console.log(error)
   }
 }
