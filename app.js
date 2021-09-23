@@ -8,6 +8,8 @@ const { useRoutes } = require('./routes')
 const { serverListen } = require('./config/server')
 const { createDBConnection } = require('./config/db_connection')
 
+const errorHandler = require('./middlewares/errorHandler')
+
 const app = express()
 const server = http.createServer(app)
 
@@ -16,8 +18,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
-
 useRoutes(app)
+
+app.use(errorHandler)
+
 start()
 
 async function start() {

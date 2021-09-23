@@ -9,7 +9,7 @@ async function createDBConnection () {
       useUnifiedTopology: true,
     })
     console.log('Connected to the DB')
-  } catch(error) {
+  } catch (error) {
     console.log(`Failed to connect to the DB : => ${error}`)
     throw error
   }

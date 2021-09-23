@@ -4,7 +4,7 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: [],
+  extends: ['eslint:recommended'],
   parserOptions: {
     ecmaVersion: 12,
   },
@@ -13,5 +13,8 @@ module.exports = {
     'quotes': ['error', 'single'],
     'no-var': 'error',
     'keyword-spacing': ['error', { 'before': true }]
+  },
+  globals: {
+    process: 'readonly'
   },
 }

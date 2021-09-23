@@ -2,7 +2,7 @@ const { PORT } = process.env
 
 const serverListen = (server) => {
   server.listen(PORT, (error) => {
-    if(error) {
+    if (error) {
       console.log(`Server listen error ${error}`)
       throw error
     }
