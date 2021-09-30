@@ -20,7 +20,6 @@ const checkUserExists = async (query) => {
     } else {
       role = 'user'
     }
-
     return { user, role, generateAccesToken }
   } catch (error) {
     console.log(`usersService.checkUserExists error: ${error}`)
@@ -29,11 +28,15 @@ const checkUserExists = async (query) => {
 }
 
 const checkAdminById = async (adminId) => {
-  console.log('usersService.checkAdminById')
-  const admin = await Admins.findById(adminId).exec()
-  if (!admin) {
-    console.log('usersService.checkAdminById error')
-    throw Error('No admin found for this user')
+  try {
+    console.log('usersService.checkAdminById')
+    const admin = await Admins.findById(adminId).exec()
+    if (!admin) {
+      throw Error('No admin found for this user')
+    }
+  } catch (error) {
+    console.log(`usersService.checkAdminById error: ${error}`)
+    throw error
   }
 }
 
@@ -93,8 +96,8 @@ const checkPasswords = async (password, hash) => {
   })
 }
 
-const generateAccesToken = (userId, role) => {
-  return jwt.sign({ id: userId, role }, SECRET_KEY, { expiresIn: '10m' })
+const generateAccesToken = (userId, userName, role) => {
+  return jwt.sign({ id: userId, userName, role }, SECRET_KEY, { expiresIn: '10m' })
 }
 
 module.exports = {

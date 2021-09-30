@@ -8,17 +8,17 @@ const signUpUser = async (req, res, next) => {
     const { userName, login, password, role } = req.body
     const adminId = req.body.adminId || null
 
-    const { error: validationError } = userValidation({ userName, login, password })
+    const { error: validationError } = userValidation({ userName, login, password, role })
     
     if (validationError) {
       const { message } = validationError.details[0]
       const error = new Error(message)
-      error.statusCode = 500
       return next(error)
     }
 
     const query = { $or: [{ userName }, { login }] }
     const candidate = await authService.checkUserExists(query)
+    
     if (candidate.user) {
       console.log('signUpController.signUpUser dublicate user error')
       const error = new Error('User with such userName or login already exists')
@@ -40,6 +40,7 @@ const signInUser = async (req, res, next) => {
 
     const query = { userName }
     const candidate = await authService.checkUserExists(query)
+
     if (!candidate.user) {
       console.log('signInController.signInUser check userName error')
       const error = new Error('No user with such userName')
@@ -53,7 +54,7 @@ const signInUser = async (req, res, next) => {
     const checkedResult = await authService.checkPasswords(password, hashedPassword)
     
     if (checkedResult) {
-      accessToken = candidate.generateAccesToken(user._id, role)
+      accessToken = candidate.generateAccesToken(user._id, user.userName, role)
     } else {
       console.log('signInController.signInUser error')
       const error = new Error('Passwords did not match')
