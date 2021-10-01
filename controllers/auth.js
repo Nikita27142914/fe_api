@@ -62,7 +62,7 @@ const signInUser = async (req, res, next) => {
       return next(error)
     }
 
-    res.status(200).json({ token: accessToken })
+    res.status(200).json({ token: accessToken, role })
   } catch (error) {
     console.log('signInController.signInUser error')
     error.statusCode = 401
