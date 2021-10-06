@@ -1,4 +1,3 @@
-// const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
 
@@ -97,7 +96,8 @@ const checkPasswords = async (password, hash) => {
 }
 
 const generateAccesToken = (userId, userName, role) => {
-  return jwt.sign({ id: userId, userName, role }, SECRET_KEY, { expiresIn: '10m' })
+  const token = jwt.sign({ id: userId, userName, role }, SECRET_KEY, { expiresIn: '10m'}, { algorithm: 'HS256' })
+  return token
 }
 
 module.exports = {
