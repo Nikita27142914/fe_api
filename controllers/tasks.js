@@ -63,9 +63,9 @@ const createTask = async (req, res, next) => {
 
     const taskQuery = { createdBy: userName, name, userId }
     await tasksService.checkDublicate(taskQuery)
-    await tasksService.createTask(taskQuery)
+    const newTask = await tasksService.createTask(taskQuery)
 
-    res.sendStatus(201)
+    res.status(201).send(newTask)
   } catch (error) {
     console.log('tasksController.createTask error')
     return next(error)

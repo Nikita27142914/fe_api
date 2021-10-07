@@ -16,6 +16,7 @@ const createTask = async (query) => {
     console.log('tasksService.createTask')
     const task = new Tasks(query)
     await task.save()
+    return task
   } catch (error) {
     console.log(`tasksService.createTask error: ${error}`)
     throw error
