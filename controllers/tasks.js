@@ -8,14 +8,41 @@ const getTasks = async (req, res, next) => {
     const { id: userId, role } = req.user
     let tasks = []
 
+    const paginationParams = tasksService.checkPaginationParams(req.query)
+
     usersService.checkRolePermissions(role, 'user')
 
     const query = { userId }
-    tasks = await tasksService.getTasks(query)
+    if (req.query.searchName) {
+      const { searchName } = req.query
+      query.name = { $regex: '.*' + searchName + '.*' }
+    }
+    tasks = await tasksService.getTasks(query, paginationParams)
 
     res.status(200).send(tasks)
   } catch (error) {
     console.log('tasksController.getTasks error')
+    return next(error)
+  }
+}
+
+const getTasksCount = async (req, res, next) => {
+  try {
+    console.log('tasksController.getTasksCount')
+    const { id: userId, role } = req.user
+
+    usersService.checkRolePermissions(role, 'user')
+
+    const query = { userId }
+    if (req.query.searchName) {
+      const { searchName } = req.query
+      query.name = { $regex: '.*' + searchName + '.*' }
+    }
+    const tasksCount = await tasksService.getTasksCount(query)
+
+    res.status(200).send(tasksCount)
+  } catch (error) {
+    console.log('tasksController.getTasksCount error')
     return next(error)
   }
 }
@@ -26,6 +53,8 @@ const getTasksForAdmin = async (req, res, next) => {
     const userId = req.params.id
     const { id: adminId, role } = req.user
     let tasks = []
+    
+    const paginationParams = tasksService.checkPaginationParams(req.query)
 
     usersService.checkRolePermissions(role, 'admin')
     
@@ -33,11 +62,40 @@ const getTasksForAdmin = async (req, res, next) => {
     await usersService.checkAdminPermissionsForUser(usersQuery)
 
     const query = { userId }
-    tasks = await tasksService.getTasks(query)
+    if (req.query.searchName) {
+      const { searchName } = req.query
+      query.name = { $regex: '.*' + searchName + '.*' }
+    }
+    tasks = await tasksService.getTasks(query, paginationParams)
 
     res.status(200).send(tasks)
   } catch (error) {
     console.log('tasksController.getTasksForAdmin error')
+    return next(error)
+  }
+}
+
+const getTasksCountForAdmin = async (req, res, next) => {
+  try {
+    console.log('tasksController.getTasksCountForAdmin')
+    const userId = req.params.id
+    const { id: adminId, role } = req.user
+
+    usersService.checkRolePermissions(role, 'admin')
+    
+    const usersQuery = {_id: userId, adminId}
+    await usersService.checkAdminPermissionsForUser(usersQuery)
+
+    const query = { userId }
+    if (req.query.searchName) {
+      const { searchName } = req.query
+      query.name = { $regex: '.*' + searchName + '.*' }
+    }
+    const tasksCount = await tasksService.getTasksCount(query)
+
+    res.status(200).send(tasksCount)
+  } catch (error) {
+    console.log('tasksController.getTasksCountForAdmin error')
     return next(error)
   }
 }
@@ -120,7 +178,9 @@ const deleteTask = async (req, res, next) => {
 
 module.exports = {
   getTasks,
+  getTasksCount,
   getTasksForAdmin,
+  getTasksCountForAdmin,
   createTask,
   updateTask,
   deleteTask

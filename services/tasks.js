@@ -1,12 +1,26 @@
 const Tasks = require('../models/Tasks')
 
-const getTasks = async (query) => {
+const getTasks = async (query, paginationParams) => {
   try {
     console.log('tasksService.getTasks')
-    const tasks = await Tasks.find(query).exec()
+    const { skip, limit } = paginationParams
+
+    const tasks = await Tasks.find(query).skip(skip).limit(limit).exec()
     return tasks
   } catch (error) {
     console.log(`tasksService.getTasks error: ${error}`)
+    throw error
+  }
+}
+
+const getTasksCount = async (query) => {
+  try {
+    console.log('tasksService.getTasksCount')
+
+    const tasksCount = await Tasks.count(query)
+    return { tasksCount }
+  } catch (error) {
+    console.log(`tasksService.getTasksCount error: ${error}`)
     throw error
   }
 }
@@ -54,6 +68,30 @@ const deleteTask = async (query) => {
   }
 }
 
+const checkPaginationParams = (query) => {
+  try {
+    const { pageSize, pageNumber } = query
+    let paginationParams = {}
+
+    if (pageSize !== undefined && pageNumber !== undefined) {
+      const skip = parseInt(pageSize) * parseInt(pageNumber)
+      const limit = parseInt(pageSize)
+
+      if (isNaN(skip) || isNaN(limit)) {
+        const error = new Error('Page size or (and) page number are not provided or invalid')
+        throw error
+      }
+
+      paginationParams = { skip, limit } 
+    }
+
+    return paginationParams
+  } catch (error) {
+    console.log(`tasksService.checkPaginationParams error: ${error}`)
+    throw error
+  }
+}
+
 const checkDublicate = async (query) => {
   try {
     console.log('tasksService.checkDublicate')
@@ -86,9 +124,11 @@ const checkTaskChecked = async (query) => {
 
 module.exports = {
   getTasks,
+  getTasksCount,
   createTask,
   updateTask,
   deleteTask,
+  checkPaginationParams,
   checkDublicate,
   checkTaskChecked
 }
