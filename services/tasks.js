@@ -74,8 +74,8 @@ const checkPaginationParams = (query) => {
     let paginationParams = {}
 
     if (pageSize !== undefined && pageNumber !== undefined) {
-      const skip = parseInt(pageSize) * parseInt(pageNumber)
-      const limit = parseInt(pageSize)
+      const skip = Number(pageSize) * Number(pageNumber)
+      const limit = Number(pageSize)
 
       if (isNaN(skip) || isNaN(limit)) {
         const error = new Error('Page size or (and) page number are not provided or invalid')
