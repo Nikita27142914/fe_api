@@ -70,7 +70,18 @@ const signInUser = async (req, res, next) => {
   }
 }
 
+const logoutUser = async (req, res, next) => {
+  try {
+
+    res.sendStatus(200)
+  } catch (error) {
+    console.log('signInController.logoutUser error')
+    return next(error)
+  }
+}
+
 module.exports = {
   signUpUser,
-  signInUser
+  signInUser,
+  logoutUser
 }
