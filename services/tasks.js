@@ -3,9 +3,15 @@ const Tasks = require('../models/Tasks')
 const getTasks = async (query, paginationParams) => {
   try {
     console.log('tasksService.getTasks')
+    let tasks = []
     const { skip, limit } = paginationParams
 
-    const tasks = await Tasks.find(query).skip(skip).limit(limit).exec()
+    if (skip && limit) {
+      tasks = await Tasks.find(query).skip(skip).limit(limit).exec()  
+    } else {
+      tasks = await Tasks.find(query).exec()
+    }
+
     return tasks
   } catch (error) {
     console.log(`tasksService.getTasks error: ${error}`)
@@ -54,7 +60,7 @@ const updateTask = async (query) => {
 const deleteTask = async (query) => {
   try { 
     console.log('tasksService.deleteTask')
-    const tasks = await getTasks(query)
+    const tasks = await getTasks(query, {})
 
     if (tasks.length === 0) {
       const error = new Error('No task found')
@@ -95,7 +101,9 @@ const checkPaginationParams = (query) => {
 const checkDublicate = async (query) => {
   try {
     console.log('tasksService.checkDublicate')
-    const tasks = await getTasks(query)
+    const tasks = await getTasks(query, {})
+
+    console.log('tasks ', tasks)
 
     if (tasks.length !== 0) {
       const error = new Error('Task with such name already exists for user')
@@ -110,7 +118,7 @@ const checkDublicate = async (query) => {
 const checkTaskChecked = async (query) => {
   try {
     console.log('tasksService.checkDublicate')
-    const tasks = await getTasks(query)
+    const tasks = await getTasks(query, {})
 
     if (tasks.length !== 0) {
       const error = new Error('Task is not checked to be deleted')
