@@ -45,6 +45,10 @@ const getUsersCount = async (req, res, next) => {
     }
 
     const query = { adminId: id }
+    if (req.query.searchName) {
+      const { searchName } = req.query
+      query.userName = { $regex: '.*' + searchName + '.*' }
+    }
     const usersCount = await usersService.getUsersCount(query)
 
     res.status(200).send(usersCount)
