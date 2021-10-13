@@ -12,14 +12,34 @@ const getAdmins = async () => {
   }
 }
 
-const getUsers = async (query) => {
+const getUsers = async (query, paginationParams) => {
   try {
     console.log('usersService.getUsers')
-    const users = await Users.find(query)
+    let users = []
+    const { skip, limit } = paginationParams
+
+    if (skip !== undefined && limit !== undefined) {
+      users = await Users.find(query).skip(skip).limit(limit).exec()  
+    } else {
+      users = await Users.find(query).exec()
+    }
+
     return users
   } catch (error) {
     console.log(`usersService.getUsers error: ${error}`)
     throw error 
+  }
+}
+
+const getUsersCount = async (query) => {
+  try {
+    console.log('usersService.getUsersCount')
+
+    const usersCount = await Users.count(query)
+    return { usersCount }
+  } catch (error) {
+    console.log(`usersService.getTasksCount error: ${error}`)
+    throw error
   }
 }
 
@@ -40,8 +60,7 @@ const checkRolePermissions = (role, expectedRole) => {
 const checkAdminPermissionsForUser = async (usersQuery) => {
   try {
     console.log('usersService.checkAdminPermissionsForUser')
-    const users = await getUsers(usersQuery)
-    console.log('users ', users, usersQuery)
+    const users = await getUsers(usersQuery, {})
 
     if (users.length === 0) {
       const error = new Error('No permissions')
@@ -57,6 +76,7 @@ const checkAdminPermissionsForUser = async (usersQuery) => {
 module.exports = {
   getAdmins,
   getUsers,
+  getUsersCount,
   checkRolePermissions,
   checkAdminPermissionsForUser
 }

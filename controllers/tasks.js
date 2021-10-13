@@ -1,5 +1,6 @@
 const usersService = require('../services/users')
 const tasksService = require('../services/tasks')
+const commonService = require('../services/common')
 const taskValidation = require('../validations/tasks')
 
 const getTasks = async (req, res, next) => {
@@ -8,7 +9,7 @@ const getTasks = async (req, res, next) => {
     const { id: userId, role } = req.user
     let tasks = []
 
-    const paginationParams = tasksService.checkPaginationParams(req.query)
+    const paginationParams = commonService.checkPaginationParams(req.query)
 
     usersService.checkRolePermissions(role, 'user')
 
@@ -54,7 +55,7 @@ const getTasksForAdmin = async (req, res, next) => {
     const { id: adminId, role } = req.user
     let tasks = []
     
-    const paginationParams = tasksService.checkPaginationParams(req.query)
+    const paginationParams = commonService.checkPaginationParams(req.query)
 
     usersService.checkRolePermissions(role, 'admin')
     
