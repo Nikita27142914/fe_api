@@ -146,6 +146,11 @@ const updateTask = async (req, res, next) => {
     }
 
     const taskQuery = { ...req.body, userName }
+    if (taskQuery.name) {
+      const { id, userId, name } = taskQuery
+      const dublicateQuery = { $and: [{ _id: { $ne: id }}, { userId }, { name }] }
+      await tasksService.checkDublicate(dublicateQuery)
+    }
     delete taskQuery.userId
     await tasksService.updateTask(taskQuery)
 

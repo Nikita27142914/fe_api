@@ -1,5 +1,7 @@
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
+// const path = require('path')
+// const fs = require('fs')
 
 const Admins = require('../models/Admins')
 const Users = require('../models/Users')
@@ -8,7 +10,7 @@ const { SECRET_KEY } = process.env
 
 const checkUserExists = async (query) => {
   try {
-    console.log('usersService.checkUserExists')
+    console.log('authService.checkUserExists')
     let user
     let role
 
@@ -21,27 +23,27 @@ const checkUserExists = async (query) => {
     }
     return { user, role, generateAccesToken }
   } catch (error) {
-    console.log(`usersService.checkUserExists error: ${error}`)
+    console.log(`authService.checkUserExists error: ${error}`)
     throw error
   }
 }
 
 const checkAdminById = async (adminId) => {
   try {
-    console.log('usersService.checkAdminById')
+    console.log('authService.checkAdminById')
     const admin = await Admins.findById(adminId).exec()
     if (!admin) {
       throw Error('No admin found for this user')
     }
   } catch (error) {
-    console.log(`usersService.checkAdminById error: ${error}`)
+    console.log(`authService.checkAdminById error: ${error}`)
     throw error
   }
 }
 
 const createUser = async ({ userName, login, password, role, adminId }) => {
   try {
-    console.log('usersService.createUser')
+    console.log('authService.createUser')
     let user
     // const hashedPassword = bcrypt.hashSync(password, 1)
     const hashedPassword = await hashPassword(password)
@@ -58,19 +60,19 @@ const createUser = async ({ userName, login, password, role, adminId }) => {
       throw Error('User role is not valid')
     }
   } catch (error) {
-    console.log(`usersService.createUser error: ${error}`)
+    console.log(`authService.createUser error: ${error}`)
     throw error
   }
 }
 
 const createAdmin = async ({ userName, login, hashedPassword }) => {
   try {
-    console.log('usersService.createAdmin')
+    console.log('authService.createAdmin')
     const admin = new Admins({ password: hashedPassword, userName, login })
     await admin.save()
     console.log(`created admin ${admin}`)
   } catch (error) {
-    console.log(`usersService.createAdmin error: ${error}`)
+    console.log(`authService.createAdmin error: ${error}`)
     throw error
   }
 }
@@ -100,8 +102,45 @@ const generateAccesToken = (userId, userName, role) => {
   return token
 }
 
+// const logoutUser = async (token) => {
+//   try {
+//     console.log('authService.logoutUser')
+
+//     const blackListTokens = await getBlackListTokens()
+
+
+
+//   } catch (error) {
+//     console.log(`authService.logoutUser error: ${error}`)
+//     throw error
+//   }
+// }
+
+
+// const getBlackListTokens = async () => {
+//   console.log('authService.logoutUser')
+//   return new Promise((resolve, reject) => {
+//     fs.readFile(
+//       path.resolve(__dirname, '../static/BlackList.json'),
+//       'utf-8',
+//       (err, data) => {
+//         if (err) {
+//           reject(err)
+//         } else {
+//           resolve(JSON.parse(data))
+//         }
+//       }
+//     )
+//   })
+// } 
+
+// const updateBlackListTokens = async () => {
+
+// }
+
 module.exports = {
   checkUserExists,
   createUser,
-  checkPasswords
+  checkPasswords,
+  // logoutUser
 }
