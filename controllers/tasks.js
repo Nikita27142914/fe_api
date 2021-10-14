@@ -93,9 +93,9 @@ const updateTask = async (req, res, next) => {
       await tasksService.checkDublicate(dublicateQuery)
     }
     delete taskQuery.userId
-    await tasksService.updateTask(taskQuery)
+    const updatedTask = await tasksService.updateTask(taskQuery)
 
-    res.sendStatus(200)
+    res.status(200).send(updatedTask)
   } catch (error) {
     console.log('tasksController.updateTask error')
     return next(error)

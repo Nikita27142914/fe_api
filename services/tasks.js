@@ -25,12 +25,14 @@ const createTask = async (query) => {
 
 const updateTask = async (query) => {
   try {
-    console.log('tasksService.updateTask ', query)
+    console.log('tasksService.updateTask ')
     const { id: _id, userName: updatedBy } = query
     const updatedAt = new Date()
     delete query.id 
     delete query.userName 
     await Tasks.updateOne({_id}, { ...query, updatedAt, updatedBy })
+    const task = await Tasks.findById(_id)
+    return task
   } catch (error) {
     console.log(`tasksService.updateTask error: ${error}`)
     throw error
