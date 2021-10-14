@@ -15,6 +15,7 @@ module.exports = {
     'keyword-spacing': ['error', { 'before': true }]
   },
   globals: {
-    process: 'readonly'
+    process: 'readonly',
+    __dirname: 'readonly'
   },
 }

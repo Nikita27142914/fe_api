@@ -72,7 +72,9 @@ const signInUser = async (req, res, next) => {
 
 const logoutUser = async (req, res, next) => {
   try {
-
+    console.log('signInController.logoutUser')
+    // const token = req.headers.authorization.split(' ')[1]
+    // await authService.logoutUser(token)
     res.sendStatus(200)
   } catch (error) {
     console.log('signInController.logoutUser error')
